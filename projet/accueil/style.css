@@ -1,0 +1,95 @@
+ html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: "Courier New", monospace;
+            background: #000;
+            color: #e5e5e5;
+        }
+
+        /* ---------------- Background Iframe (Fullscreen) ---------------- */
+        #bgVideo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            filter: grayscale(100%) contrast(1.1) brightness(0.7);
+            pointer-events: none;
+        }
+
+        /* Grain Overlay */
+        .grain {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background-image: url("https://www.dropbox.com/s/3t2o7x5n2jvqjbc/film_grain.png?raw=1");
+            opacity: 0.25;
+            mix-blend-mode: overlay;
+            z-index: -1;
+        }
+
+        /* Vignette */
+        .vignette {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+
+        /* Center Title */
+        .center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            text-align: center;
+            transform: translate(-50%, -50%);
+        }
+
+        .main-title {
+            font-size: 3.8em;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px #000;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .nav-buttons {
+            margin-top: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border: 2px solid #e5e5e5;
+            color: #e5e5e5;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 8px;
+            transition: 0.3s linear;
+            backdrop-filter: blur(3px);
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.1);
+            letter-spacing: 3px;
+        }
+
+        /* Flicker */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.97; }
+            100% { opacity: 1; }
+        }
+
+        body { animation: flicker 0.6s infinite; }

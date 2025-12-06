@@ -1,0 +1,134 @@
+ html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: "Courier New", monospace;
+            background: #000;
+            color: #e5e5e5;
+        }
+
+        /* ---------------- Background Video ---------------- */
+        #bgVideo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%);
+            z-index: -3;
+            filter: grayscale(100%) contrast(1.15) brightness(0.7);
+            pointer-events: none;
+        }
+
+        .grain {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background-image: url("https://www.dropbox.com/s/3t2o7x5n2jvqjbc/film_grain.png?raw=1");
+            opacity: 0.25;
+            mix-blend-mode: overlay;
+            z-index: -2;
+        }
+
+        .vignette {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+            z-index: -1;
+        }
+
+        /* ---------------- Navigation Panel ---------------- */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            z-index: 5;
+            overflow-y: auto;
+        }
+
+        .side-nav h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .side-nav a {
+            display: block;
+            color: #dcdcdc;
+            text-decoration: none;
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+            transition: color 0.25s linear,
+                transform 0.25s ease,
+                background  0.25s ease,
+                padding-left 0.25s ease,
+                text-shadow 0.25s ease;
+        }
+
+        .side-nav a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff;
+        }
+        .side-nav a.active {
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(255,255,255,0.9);
+    transform: scale(1.05) translateX(6px);
+    border-left: 3px solid #ffffff;
+    padding-left: 12px;
+    background: rgba(255,255,255,0.07);
+}
+
+        /* ---------------- Documentation Content ---------------- */
+        .content {
+            margin-left: 270px;
+            padding: 40px 60px;
+            z-index: 10;
+            position: relative;
+        }
+
+        section {
+            margin-bottom: 80px;
+            background: rgba(0,0,0,0.55);
+            padding: 25px;
+            border-left: 3px solid #e5e5e5;
+            backdrop-filter: blur(3px);
+        }
+
+        section h1, section h2 {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        section h1 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+
+        section h2 {
+            font-size: 1.4em;
+            margin-top: 20px;
+        }
+
+        p {
+            line-height: 1.6em;
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        /* ---------------- Flicker Effect ---------------- */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.96; }
+            100% { opacity: 1; }
+        }
+
+        body { animation: flicker 0.8s infinite; }
