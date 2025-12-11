@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos – Old Cinema Project</title>
+    <style>
+        /* Styles généraux */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            color: #e0e0e0;
+            background-color: #000;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Video de fond */
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        /* Conteneur pour la vidéo de fond personnalisée */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -4;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            filter: brightness(0.4) contrast(1.2) grayscale(0.3);
+        }
+
+        /* Overlay pour assombrir la vidéo */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.95) 100%);
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        /* Overlay de grain */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuMDQiLz48L3N2Zz4=');
+            opacity: 0.25;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.97);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Image de fond Zeus */
+        .zeus-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1594909122845-11baa439b7bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.04;
+            z-index: -3;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        /* Navigation latérale */
+        .side-nav {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(10, 10, 10, 0.9);
+            padding: 25px 20px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            width: 200px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            border-left: 3px solid #8b0000;
+        }
+
+        .side-nav h2 {
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #8b0000;
+            padding-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .side-nav a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            margin: 12px 0;
+            padding: 8px 12px;
+            transition: all 0.3s;
+            border-left: 2px solid transparent;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .side-nav a::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #8b0000;
+            transform: translateX(-10px);
+            transition: transform 0.3s;
+        }
+
+        .side-nav a:hover::before, .side-nav a.active::before {
+            transform: translateX(0);
+        }
+
+        .side-nav a:hover, .side-nav a.active {
+            color: #fff;
+            background-color: rgba(139, 0, 0, 0.15);
+            padding-left: 18px;
+        }
+
+        .side-nav .btn {
+            display: inline-block;
+            background: linear-gradient(to right, rgba(30, 30, 30, 0.9), rgba(50, 50, 50, 0.9));
+            color: #ccc;
+            padding: 12px 18px;
+            margin: 8px 5px;
+            text-decoration: none;
+            border: 1px solid #666;
+            border-radius: 3px;
+            text-align: center;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            width: calc(100% - 10px);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .side-nav .btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .side-nav .btn:hover::after {
+            left: 100%;
+        }
+
+        .side-nav .btn:hover {
+            background: linear-gradient(to right, #8b0000, #a52a2a);
+            color: #fff;
+            border-color: #8b0000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        /* Contenu principal */
+        .content {
+            margin-left: 250px;
+            padding: 40px;
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+        }
+
+        section {
+            background-color: rgba(15, 15, 15, 0.9);
+            padding: 35px;
+            margin-bottom: 50px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            transition: transform 0.4s, box-shadow 0.4s;
+            border-top: 1px solid #333;
+        }
+
+        section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #8b0000, #b22222, #8b0000, transparent);
+        }
+
+        section::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        h1, h2, h3 {
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+            font-weight: 300;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8b0000, transparent);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            border-bottom: 1px solid #8b0000;
+            padding-bottom: 15px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-weight: 300;
+            position: relative;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: #b22222;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin-top: 30px;
+            color: #d0d0d0;
+            font-weight: 300;
+            padding-left: 15px;
+            border-left: 3px solid #8b0000;
+        }
+
+        p {
+            margin-bottom: 25px;
+            text-align: justify;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 25px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            padding-left: 15px;
+            position: relative;
+            line-height: 1.7;
+        }
+
+        li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #8b0000;
+        }
+
+        blockquote {
+            background-color: rgba(25, 25, 25, 0.9);
+            padding: 30px;
+            border-left: 5px solid #8b0000;
+            margin: 35px 0;
+            font-style: italic;
+            color: #ddd;
+            font-size: 1.15rem;
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.7);
+            position: relative;
+            border-radius: 0 5px 5px 0;
+            line-height: 1.8;
+        }
+
+        blockquote::before {
+            content: "❝";
+            position: absolute;
+            top: -20px;
+            left: 15px;
+            font-size: 3.5rem;
+            color: #8b0000;
+            opacity: 0.4;
+            font-family: serif;
+        }
+
+        blockquote::after {
+            content: "❞";
+            position: absolute;
+            bottom: -30px;
+            right: 15px;
+            font-size: 3.5rem;
+            color: #8b0000;
+            opacity: 0.4;
+            font-family: serif;
+        }
+
+        .stats {
+            background: linear-gradient(to right, rgba(139, 0, 0, 0.15), rgba(165, 42, 42, 0.1));
+            padding: 20px;
+            border: 1px solid #8b0000;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1rem;
+            color: #ddd;
+            border-radius: 3px;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(139, 0, 0, 0.05) 50%, transparent 70%);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        .section-img {
+            border: 3px solid #555;
+            border-radius: 5px;
+            transition: transform 0.4s, filter 0.4s, box-shadow 0.4s;
+            filter: grayscale(30%) sepia(10%) contrast(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-img::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.7) 100%);
+            z-index: 1;
+        }
+
+        .section-img:hover {
+            transform: scale(1.03);
+            filter: grayscale(10%) sepia(5%) contrast(1.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Style pour mettre en valeur le nom */
+        .name-highlight {
+            color: #8b0000;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(139, 0, 0, 0.7);
+            position: relative;
+            display: inline-block;
+            padding: 0 5px;
+        }
+
+        .name-highlight::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #8b0000;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .name-highlight:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Style pour les images flottantes */
+        .float-left {
+            float: left;
+            margin: 0 30px 25px 0;
+        }
+
+        .float-right {
+            float: right;
+            margin: 0 0 25px 30px;
+        }
+
+        .center-img {
+            display: block;
+            margin: 0 auto 30px auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content {
+                margin-left: 240px;
+                padding: 30px;
+                max-width: 800px;
+            }
+            
+            .side-nav {
+                width: 180px;
+                padding: 20px 15px;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .side-nav {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                width: 100%;
+                margin-bottom: 30px;
+                padding: 25px;
+                border-left: none;
+                border-top: 3px solid #8b0000;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 25px;
+                max-width: 100%;
+            }
+            
+            .side-nav h2 {
+                text-align: center;
+            }
+            
+            .side-nav a {
+                display: inline-block;
+                margin: 8px 15px;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                padding: 10px 15px;
+            }
+            
+            .side-nav a::before {
+                display: none;
+            }
+            
+            .side-nav a:hover, .side-nav a.active {
+                border-bottom: 2px solid #8b0000;
+                padding-left: 15px;
+                background-color: rgba(139, 0, 0, 0.1);
+            }
+            
+            .side-nav .btn {
+                width: auto;
+                display: inline-block;
+                margin: 10px 15px;
+                padding: 10px 20px;
+            }
+            
+            .float-left, .float-right {
+                float: none !important;
+                display: block;
+                margin: 0 auto 30px auto !important;
+                max-width: 80%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            section {
+                padding: 25px;
+                margin-bottom: 35px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+                margin-bottom: 30px;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            h3 {
+                font-size: 1.4rem;
+            }
+            
+            .section-img {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 20px 0 !important;
+            }
+            
+            .video-background video {
+                display: none;
+            }
+            
+            .video-background {
+                background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1925&q=80') no-repeat center center;
+                background-size: cover;
+                filter: grayscale(100%) brightness(0.3);
+            }
+            
+            blockquote {
+                padding: 20px;
+                font-size: 1.05rem;
+            }
+            
+            blockquote::before, blockquote::after {
+                font-size: 2.5rem;
+            }
+            
+            .stats {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 15px;
+            }
+            
+            section {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .side-nav a {
+                display: block;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .side-nav .btn {
+                display: block;
+                width: 90%;
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Nouvelle vidéo de fond (film muet rétro) -->
+<div class="video-background">
+    <video autoplay muted loop playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-old-film-projector-34655-large.mp4" type="video/mp4">
+        <!-- Source de secours si la première ne fonctionne pas -->
+        <source src="https://cdn.pixabay.com/video/2023/02/22/160709-806918929_large.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div class="video-overlay"></div>
+<div class="zeus-bg"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<!-- Side Navigation -->
+<div class="side-nav">
+    <h2>À propos</h2>
+
+    <a href="#profile">Mon Profil</a>
+    <a href="#skills">Compétences</a>
+    <a href="#project">Le Projet Web</a>
+    <a href="#objectives">Objectifs</a>
+    <a href="#tools">Outils utilisés</a>
+    <a href="#comments">Commentaires</a>
+
+    <br><br><br>
+
+    <a class="btn" href="../accueil/index.html">Accueil</a>
+    <a class="btn" href="../main/index.html">Main</a>
+    <a class="btn" href="../Gallery/index.html">Gallery</a>
+</div>
+
+
+<!-- Main Content -->
+<div class="content">
+<br><br>
+
+
+<!-- SECTION : PROFILE -->
+<section id="profile">
+    <h1>À propos de moi</h1>
+
+    <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80"
+         alt="Profil étudiant en informatique"
+         class="section-img float-left"
+         style="width:40%;">
+
+    <p>
+        Je suis <span class="name-highlight">Azer Belaid</span>, étudiant en informatique passionné par la création visuelle, la cybersécurité,
+        et l'ingénierie logicielle. J'explore différents domaines en construisant des projets
+        réels. Ce site représente l'une de mes premières initiatives pour pratiquer
+        le HTML, le CSS et le JavaScript tout en développant une identité visuelle rétro
+        inspirée du cinéma des années 1920.
+    </p>
+
+    <p>
+        Mon parcours académique à l'ESSTHS m'a permis d'acquérir des bases solides en 
+        programmation, réseaux et mathématiques, que je cherche maintenant à appliquer
+        à travers des projets concrets comme celui-ci.
+    </p>
+
+    <blockquote>
+        "Apprendre en construisant : c'est la seule manière d'obtenir une maîtrise durable 
+        et de transformer la théorie en compétences pratiques."
+    </blockquote>
+
+    <div class="stats">
+        Âge : 19 ans • Étudiant en Informatique (ESSTHS) • 
+        Li2 • Tp3 • Passionné de design rétro et nouvelles technologies
+    </div>
+
+    <div class="clear"></div>
+</section>
+
+<br><br>
+
+
+<!-- SECTION : SKILLS -->
+<section id="skills">
+    <h2>Compétences Actuelles</h2>
+
+    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+         alt="Code informatique sur écran"
+         class="section-img float-left"
+         style="width:42%;">
+
+    <p>
+        Je suis en train de développer un ensemble de compétences techniques couvrant
+        à la fois le développement web et les bases de l'informatique en général :
+    </p>
+
+    <ul>
+        <li><strong>Développement Web</strong> : HTML5, CSS3, JavaScript (ES6+)</li>
+        <li><strong>Langages de programmation</strong> : Python, C, Java</li>
+        <li><strong>Réseaux et sécurité</strong> : bases CCNA, configuration avec Packet Tracer</li>
+        <li><strong>Mathématiques appliquées</strong> : Algèbre, Statistiques, Probabilités</li>
+        <li><strong>Bases de données</strong> : MySQL, Oracle (concepts fondamentaux)</li>
+        <li><strong>Design</strong> : Interfaces utilisateur, expérience utilisateur, design rétro</li>
+    </ul>
+
+    <blockquote>
+        "La technique ne remplace pas la créativité : elle lui donne les moyens d'exister
+        et de se matérialiser dans des projets concrets et fonctionnels."
+    </blockquote>
+
+    <div class="stats">
+        +12 technologies étudiées • +20 projets étudiants réalisés • En progression continue et régulière
+    </div>
+
+    <div class="clear"></div>
+</section>
+
+<br><br>
+
+
+<!-- SECTION : PROJECT -->
+<section id="project">
+    <h2>Le Projet : Old Cinema Documentation</h2>
+
+    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1925&q=80"
+         alt="Projecteur de cinéma vintage"
+         class="section-img float-right"
+         style="width:38%;">
+
+    <p>
+        Ce site web a été créé pour pratiquer et améliorer mes compétences en HTML, CSS et JavaScript.
+        J'ai choisi un thème inspiré du cinéma muet et du design rétro des années 1920-1930,
+        avec une ambiance volontairement sombre et cinématographique.
+    </p>
+
+    <p>
+        L'objectif était de créer une expérience immersive qui rappelle l'âge d'or du cinéma
+        tout en utilisant des technologies web modernes. Le contraste entre le thème historique
+        et les techniques de développement contemporaines est particulièrement intéressant.
+    </p>
+
+    <h3>Objectifs techniques du projet</h3>
+    <ul>
+        <li>Comprendre et maîtriser la structure sémantique d'une page HTML moderne</li>
+        <li>Implémenter une navigation latérale fixe avec suivi de section active</li>
+        <li>Utiliser l'API Intersection Observer pour des animations au défilement</li>
+        <li>Créer une esthétique cohérente basée sur le noir et blanc des films muets</li>
+        <li>Optimiser les performances et la responsivité sur tous les appareils</li>
+        <li>Intégrer des médias (vidéo, images) de manière harmonieuse et performante</li>
+    </ul>
+
+    <blockquote>
+        "Tout grand projet commence par un petit écran vide et une grande idée.
+        La persévérance transforme ensuite l'idée en réalité."
+    </blockquote>
+
+    <div class="stats">
+        1 semaine de conception intensive • 300+ lignes de code optimisées • 
+        Design rétro moderne • Performance et accessibilité au cœur du projet
+    </div>
+
+    <div class="clear"></div>
+</section>
+
+<br><br>
+
+
+<!-- SECTION : GOALS -->
+<section id="objectives">
+    <h2>Mes Objectifs d'Apprentissage</h2>
+
+    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
+         alt="Objectifs et planification"
+         class="section-img float-left"
+         style="width:35%;">
+
+    <p>À travers ce projet et mes études, je vise plusieurs objectifs à court et moyen terme :</p>
+
+    <ul>
+        <li><strong>Développement front-end</strong> : Maîtriser React.js et Vue.js pour des interfaces dynamiques</li>
+        <li><strong>Design d'interface</strong> : Développer une identité visuelle personnelle et cohérente</li>
+        <li><strong>Back-end</strong> : Apprendre Node.js et les bases de données NoSQL</li>
+        <li><strong>Cybersécurité</strong> : Approfondir mes connaissances en sécurité des applications web</li>
+        <li><strong>Performance web</strong> : Optimiser le temps de chargement et l'expérience utilisateur</li>
+        <li><strong>Collaboration</strong> : Utiliser Git et GitHub pour travailler en équipe sur des projets</li>
+    </ul>
+
+    <p>
+        Ces compétences me permettront de participer à des projets plus ambitieux
+        et éventuellement de me spécialiser dans le développement front-end ou la cybersécurité.
+    </p>
+
+    <blockquote>
+        "Le design n'est pas seulement ce que l'on voit : c'est ce que l'on comprend et ressent.
+        Une bonne interface disparaît pour laisser place à l'expérience."
+    </blockquote>
+
+    <div class="stats">
+        Objectif final : Maîtrise complète de l'écosystème web • 
+        Portfolio professionnel étoffé • Contribution à des projets open-source
+    </div>
+
+    <div class="clear"></div>
+</section>
+
+<br><br>
+
+
+<!-- SECTION : TOOLS -->
+<section id="tools">
+    <h2>Outils utilisés</h2>
+
+    <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?ixlib=rb-4.0.3&auto=format&fit=crop&w=2128&q=80"
+         alt="Outils de développement sur écran"
+         class="section-img center-img"
+         style="width:65%;margin-bottom:35px;">
+
+    <p>
+        Pour réaliser ce projet, j'ai utilisé une suite d'outils modernes qui facilitent
+        le développement web et améliorent la productivité :
+    </p>
+
+    <ul>
+        <li><strong>Visual Studio Code</strong> - Éditeur de code principal avec extensions pour HTML/CSS/JS</li>
+        <li><strong>Chrome DevTools</strong> - Debugging, analyse de performance et responsive design</li>
+        <li><strong>Git & GitHub</strong> - Contrôle de version, collaboration et hébergement du code</li>
+        <li><strong>JavaScript (ES6+)</strong> - Interactivité, animations et manipulation du DOM</li>
+        <li><strong>Unsplash & Pexels</strong> - Sources d'images libres de droits de haute qualité</li>
+        <li><strong>Adobe Color</strong> - Création et test de palettes de couleurs harmonieuses</li>
+        <li><strong>Figma (concepts)</strong> - Maquettage et prototypage des interfaces</li>
+    </ul>
+
+    <div class="stats">
+        7 outils principaux • Workflow optimisé et structuré • 
+        Développement agile avec itérations rapides
+    </div>
+
+    <div class="clear"></div>
+</section>
+
+<br><br>
+
+
+<!-- SECTION : COMMENTS -->
+<section id="comments">
+    <h2>Commentaires et Réflexions</h2>
+
+    <p>
+        Ce projet "Old Cinema" m'a permis d'acquérir une bien meilleure compréhension
+        de la structure du web moderne, des grilles visuelles CSS et de l'importance
+        de la narration dans une interface. Travailler sur un thème rétro m'a particulièrement
+        intéressé car cela impose des contraintes créatives stimulantes.
+    </p>
+
+    <p>
+        L'intégration de la vidéo d'arrière-plan a été un défi technique intéressant,
+        m'obligeant à considérer les performances, l'accessibilité et l'impact visuel.
+        J'ai appris à équilibrer les éléments visuels complexes avec la lisibilité du contenu,
+        et à créer des transitions fluides qui améliorent l'expérience utilisateur.
+    </p>
+
+    <p>
+        Ce projet représente pour moi une première étape vers la création d'un portfolio
+        professionnel. Les compétences acquises ici me seront utiles pour des projets
+        plus complexes et pour ma future carrière dans le développement web.
+    </p>
+
+    <blockquote>
+        "Un bon design raconte une histoire avant même qu'on lise le texte, 
+        et une bonne expérience utilisateur rend cette histoire inoubliable.
+        Le web est à la fois une science et un art, une technique et une émotion."
+    </blockquote>
+
+    <div class="stats">
+        Réalisé avec passion par <span class="name-highlight">Azer Belaid</span> • 
+        Étudiant en informatique • ESSTHS • 2024 • 
+        Projet éducatif et portfolio personnel
+    </div>
+</section>
+
+</div>
+
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
+    const menuLinks = document.querySelectorAll(".side-nav a");
+    const images = document.querySelectorAll(".section-img");
+
+    // Observer pour la navigation
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute("id");
+                    menuLinks.forEach(link => {
+                        link.classList.remove("active");
+                        // Ne pas désactiver les boutons de navigation
+                        if (!link.classList.contains("btn")) {
+                            link.classList.remove("active");
+                        }
+                    });
+                    const activeLink = document.querySelector(`.side-nav a[href="#${id}"]`);
+                    if (activeLink) activeLink.classList.add("active");
+                }
+            });
+        },
+        { 
+            threshold: 0.5,
+            rootMargin: "-100px 0px -100px 0px"
+        }
+    );
+
+    sections.forEach(section => observer.observe(section));
+
+    // Animation au scroll pour les sections
+    const handleScroll = () => {
+        sections.forEach((section, index) => {
+            const rect = section.getBoundingClientRect();
+            const isVisible = (rect.top < window.innerHeight * 0.85 && rect.bottom > 0);
+            
+            if (isVisible) {
+                section.style.opacity = "1";
+                section.style.transform = "translateY(0)";
+                
+                // Animation en escalier pour les images
+                const img = section.querySelector(".section-img");
+                if (img && !img.classList.contains("animated")) {
+                    setTimeout(() => {
+                        img.style.opacity = "1";
+                        img.style.transform = "scale(1)";
+                        img.classList.add("animated");
+                    }, 300 + (index * 100));
+                }
+            }
+        });
+    };
+
+     // Initialiser l'opacité des sections et images
+    sections.forEach((section, index) => {
+        section.style.opacity = "0.95";
+        section.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+        
+        const img = section.querySelector(".section-img");
+        if (img) {
+            img.style.opacity = "0";
+            img.style.transform = "scale(0.95)";
+            img.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+        }
+    });
+
+        window.addEventListener("scroll", handleScroll);
+        handleScroll();
+    });
